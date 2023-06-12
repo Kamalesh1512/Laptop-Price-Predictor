@@ -23,7 +23,8 @@ touchscreen=st.selectbox("TouchScreen",['Yes','No'])
 ips=st.selectbox("IPS",["Yes","No"])
 
 # screen size
-screen_size = st.number_input('Screen Size')
+screen_size = st.selectbox('Screen Size',[11.6,12,13.3,14,15.6,17])
+
 
 # resolution
 resolution = st.selectbox('Screen Resolution',
@@ -32,9 +33,9 @@ resolution = st.selectbox('Screen Resolution',
 #cpu
 cpu = st.selectbox('CPU',df['Cpu brand'].unique())
 
-hdd = st.selectbox('HDD(in GB)',[0,128,256,512,1024,2048])
+hdd = st.selectbox('HDD(in GB)',[128,256,512,1024,2048])
 
-ssd = st.selectbox('SSD(in GB)',[0,8,128,256,512,1024])
+ssd = st.selectbox('SSD(in GB)',[8,128,256,512,1024])
 
 gpu = st.selectbox('GPU',df['Gpu brand'].unique())
 
@@ -46,6 +47,10 @@ if st.button("Predict Price"):
         touchscreen = 1
     else:
         touchscreen = 0
+    if screen_size<=0:
+        print("Screen size should greater than Zero")
+    else:
+        pass
 
     if ips == 'Yes':
         ips = 1
@@ -56,8 +61,10 @@ if st.button("Predict Price"):
     Y_res = int(resolution.split('x')[1])
     try:
         ppi = ((X_res ** 2) + (Y_res ** 2)) ** 0.5 / screen_size
-    except ZeroDivisionError as e:
-        print("Screen Size should not be Zero")
+    except ArithmeticError  as e:
+        print(e)
+
+
     query = np.array([company, type, ram, weight, touchscreen, ips, ppi, cpu, hdd, ssd, gpu, os])
 
     query = query.reshape(1, 12)
